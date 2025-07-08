@@ -11,7 +11,6 @@ from telegram.ext import (
     filters
 )
 
-# Загрузка токена из .env
 load_dotenv()
 TOKEN = os.getenv("TELEGRAM_TOKEN")
 
@@ -22,15 +21,14 @@ bot = Bot(token=TOKEN)
 # Telegram Application
 application = ApplicationBuilder().token(TOKEN).build()
 
-# /start команда
+# Команды
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("👋 Привет! Бот работает через Webhook и готов к работе!")
 
-# Ответ на любые текстовые сообщения
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("✅ Я получил твоё сообщение!")
 
-# Обработчики Telegram
+# Обработчики
 application.add_handler(CommandHandler("start", start))
 application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
 
@@ -39,7 +37,7 @@ application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
 def webhook():
     try:
         update = Update.de_json(request.get_json(force=True), bot)
-        asyncio.create_task(application.process_update(update))  # Важно: запускаем асинхронно
+        asyncio.run(application.process_update(update))  # 🔥 исправлено
         return "ok"
     except Exception as e:
         print("❌ Ошибка обработки Webhook:", e)
