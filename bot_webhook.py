@@ -29,3 +29,4 @@ if __name__ == "__main__":
         listen="0.0.0.0",
         port=int(os.environ.get("PORT", 10000)),
         webhook_url="https://hudeybot-webhook.onrender.com/webhook"
+    )
