@@ -10,6 +10,7 @@ from telegram.ext import (
     filters
 )
 
+# Загрузка токена
 load_dotenv()
 TOKEN = os.getenv("TELEGRAM_TOKEN")
 
@@ -17,6 +18,7 @@ TOKEN = os.getenv("TELEGRAM_TOKEN")
 flask_app = Flask(__name__)
 bot = Bot(token=TOKEN)
 
+# Telegram Application
 application = ApplicationBuilder().token(TOKEN).build()
 
 # /start
@@ -32,13 +34,14 @@ application.add_handler(CommandHandler("start", start))
 application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
 
 # Webhook маршрут
-@flask_app.route('/webhook', methods=['POST'])
+@flask_app.route("/webhook", methods=["POST"])
 def webhook():
     update = Update.de_json(request.get_json(force=True), bot)
     application.process_update(update)
-    return 'ok'
+    return "ok"
 
-if __name__ == '__main__':
+# Запуск сервера Flask
+if __name__ == "__main__":
     print("🚀 Бот запущен на Webhook (Flask + Telegram)")
-    flask_app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 10000)))
+    flask_app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
 
