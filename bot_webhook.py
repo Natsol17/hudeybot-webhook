@@ -1,4 +1,4 @@
-import os
+@@ -2,50 +2,52 @@ import os
 import asyncio
 from dotenv import load_dotenv
 from flask import Flask, request
@@ -24,6 +24,8 @@ bot = Bot(token=TOKEN)
 
 # Telegram Application
 application = ApplicationBuilder().token(TOKEN).build()
+# Инициализируем приложение один раз при старте
+asyncio.run(application.initialize())
 
 # Обработчик /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -50,7 +52,3 @@ def webhook():
         traceback.print_exc()
         return "error", 500
 
-# Запуск
-if __name__ == "__main__":
-    print("🚀 Webhook бот запущен (Flask + Telegram)")
-    flask_app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
