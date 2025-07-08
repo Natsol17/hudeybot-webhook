@@ -1,4 +1,5 @@
 import os
+import asyncio
 from dotenv import load_dotenv
 from flask import Flask, request
 from telegram import Bot, Update
@@ -37,11 +38,12 @@ application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
 @flask_app.route("/webhook", methods=["POST"])
 def webhook():
     update = Update.de_json(request.get_json(force=True), bot)
-    application.process_update(update)
+    asyncio.create_task(application.process_update(update))  # ✅ ключевая правка
     return "ok"
 
 # Запуск сервера Flask
 if __name__ == "__main__":
     print("🚀 Бот запущен на Webhook (Flask + Telegram)")
     flask_app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
+
 
