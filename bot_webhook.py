@@ -11,22 +11,26 @@ from telegram.ext import (
     filters
 )
 
-# Загрузка токена
+# Загрузка токена из .env
 load_dotenv()
 TOKEN = os.getenv("TELEGRAM_TOKEN")
+
+# Проверка на наличие токена
+if not TOKEN:
+    raise ValueError("TELEGRAM_TOKEN не найден в переменных окружения!")
 
 # Flask-приложение
 flask_app = Flask(__name__)
 bot = Bot(token=TOKEN)
 
-# Telegram Application
+# Telegram-приложение
 application = ApplicationBuilder().token(TOKEN).build()
 
 # /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("👋 Привет! Бот работает через Webhook и готов к работе!")
 
-# echo
+# Ответ на любое текстовое сообщение
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("✅ Я получил твоё сообщение!")
 
@@ -38,7 +42,7 @@ application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
 @flask_app.route("/webhook", methods=["POST"])
 def webhook():
     update = Update.de_json(request.get_json(force=True), bot)
-    asyncio.create_task(application.process_update(update))  # ✅ ключевая правка
+    asyncio.create_task(application.process_update(update))
     return "ok"
 
 # Запуск сервера Flask
