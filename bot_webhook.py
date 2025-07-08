@@ -13,7 +13,7 @@ from telegram.ext import (
 load_dotenv()
 TOKEN = os.getenv("TELEGRAM_TOKEN")
 
-# Flask приложение
+# Flask-приложение
 flask_app = Flask(__name__)
 bot = Bot(token=TOKEN)
 
